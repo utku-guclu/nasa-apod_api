@@ -19,15 +19,20 @@ export default async function ImageDetail({ params }: Props) {
         layout="fill"
         priority={true}
       />
-      <div className="absolute inset-0 flex items-end justify-center max-h-fit">
-        <div className="relative group">
+      <div className="absolute inset-0 flex items-end justify-center">
+        <div className="relative group w-full">
           <div
             style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.75)" }}
-            className="bg-black bg-opacity-50 p-4 text-white opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100  overflow-y-auto max-h-full w-full md:p-6"
+            className="bg-black bg-opacity-50 p-4 text-white opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100 overflow-y-auto max-h-full w-full md:p-6"
           >
             <h1 className="text-4xl md:text-6xl">{data.title}</h1>
             <hr className="my-2" />
-            <p className="text-base md:text-lg">{data.explanation}</p>
+            <p
+              style={{ maxHeight: "75vh" }}
+              className="text-base md:text-lg overflow-y-auto"
+            >
+              {data.explanation}
+            </p>
           </div>
         </div>
       </div>
