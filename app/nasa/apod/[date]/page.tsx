@@ -21,8 +21,10 @@ export default async function ImageDetail({ params }: Props) {
       />
       <div className="absolute inset-0 flex items-end justify-center">
         <div className="bg-black bg-opacity-50 p-4 text-white">
-          <h1 className="text-3xl">{data.title}</h1>
-          <p>{data.explanation}</p>
+          <h1 className="text-6xl">{data.title}</h1>
+          <hr />
+          <br />
+          <p className="text-lg">{data.explanation}</p>
         </div>
       </div>
     </div>
