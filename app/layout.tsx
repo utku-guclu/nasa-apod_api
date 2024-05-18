@@ -12,7 +12,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <nav className="flex items-center justify-between p-4">
+        <nav className="flex items-center justify-between p-4 absolute w-full z-10 bg-nasaSky hover:bg-nasaSkyHover">
           <Link href="/" className="text-white text-xl font-bold">
             HOME
           </Link>
