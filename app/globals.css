@@ -4,7 +4,7 @@
 
 :root {
   --foreground-rgb: 26, 32, 44;
-  --background-rgb: 26, 32, 44;
+  --background-rgb: #10111f;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -15,7 +15,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to top, #4f507dbd, rgb(var(--background-rgb)));
+  background: linear-gradient(to top, #212238bd, rgb(var(--background-rgb)));
 }
 
 @layer utilities {

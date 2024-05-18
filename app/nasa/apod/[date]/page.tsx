@@ -19,8 +19,8 @@ export default async function ImageDetail({ params }: Props) {
         layout="fill"
         priority={true}
       />
-      <div className="absolute inset-0 flex items-end justify-center">
-        <div className="bg-black bg-opacity-50 p-4 text-white">
+      <div className="absolute inset-0 flex items-end justify-center max-h-fit">
+        <div className="bg-black bg-opacity-50 p-4 text-white overflow-y-auto h-full">
           <h1 className="text-6xl">{data.title}</h1>
           <hr />
           <br />

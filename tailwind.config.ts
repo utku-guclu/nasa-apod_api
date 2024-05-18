@@ -15,7 +15,7 @@ const config: Config = {
       },
       colors: {
         nasaSky: "#51526891",
-        nasaSkyHover: "#515268bd",
+        nasaSkyHover: "#292a37cc",
       },
     },
   },
