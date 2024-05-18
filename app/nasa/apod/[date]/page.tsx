@@ -14,7 +14,7 @@ export default async function ImageDetail({ params }: Props) {
     <div className="relative w-full h-screen">
       <Image
         className="object-cover"
-        src={data.url}
+        src={data.hdurl}
         alt="apod"
         layout="fill"
         priority={true}

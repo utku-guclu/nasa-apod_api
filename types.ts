@@ -6,6 +6,7 @@ export interface InferenceResponse {
 export type Nasa = {
   title: string;
   url: string;
+  hdurl: string;
   explanation: string;
   date: string;
 };
