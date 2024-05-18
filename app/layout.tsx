@@ -16,6 +16,9 @@ export default async function RootLayout({
           <Link href="/" className="text-white text-xl font-bold">
             HOME
           </Link>
+          <Link href="/nasa/apod" className="text-white text-xl font-bold">
+            POD
+          </Link>
         </nav>
         {children}
       </body>
