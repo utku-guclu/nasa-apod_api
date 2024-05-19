@@ -6,6 +6,7 @@ const nextConfig = {
       "www.youtube.com",
       "www.vimeo.com",
       "apod.nasa.gov",
+      "avatars.githubusercontent.com",
     ],
   },
 };
