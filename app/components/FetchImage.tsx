@@ -1,5 +1,4 @@
-import Image from "next/image";
-import Link from "next/link";
+import ImageComponent from "./ImageComponent";
 
 type Nasa = {
   title: string;
@@ -19,19 +18,7 @@ export default async function FetchImage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {imageData &&
           imageData.map((image) => (
-            <div key={image.date} className="relative w-full h-64">
-              <Link href={`/nasa/apod/${image.date}`}>
-                <Image
-                  className="object-cover"
-                  src={image.url}
-                  alt="apod"
-                  layout="fill"
-                />
-                <h2 className="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-2">
-                  {image.title}
-                </h2>
-              </Link>
-            </div>
+            <ImageComponent key={image.date} image={image} />
           ))}
       </div>
     </div>
