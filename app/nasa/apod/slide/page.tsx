@@ -25,7 +25,7 @@ export default function ImageDetail({ params }: Props) {
 
     const interval = setInterval(() => {
       setImageIndex((prevIndex) => (prevIndex + 1) % 10); // Assuming you want to cycle through 10 images
-    }, 10000); // 10 seconds
+    }, 60000); // 60 seconds
 
     return () => clearInterval(interval);
   }, [imageIndex]);
