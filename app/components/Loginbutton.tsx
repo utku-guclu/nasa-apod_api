@@ -1,8 +1,15 @@
+"use client";
+
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { useEffect } from "react";
 
 const LoginButton = () => {
   const { data: session } = useSession();
+
+  useEffect(() => {
+    console.log(session);
+  }, [session]);
 
   return (
     <div className="text-white text-xl font-bold">
