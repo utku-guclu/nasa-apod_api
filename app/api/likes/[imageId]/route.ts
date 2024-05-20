@@ -1,10 +1,10 @@
 // route.ts
 
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import connectDB from "@/config/database";
 import ImageModel, { ImageDocument } from "@/models/Image";
 import LikeModel, { LikeDocument } from "@/models/Like";
 import UserModel, { UserDocument } from "@/models/User";
+import { authOptions } from "@/utils/authOptions";
 import { createHash } from "crypto";
 import { getServerSession } from "next-auth/next";
 import { NextRequest, NextResponse } from "next/server";
