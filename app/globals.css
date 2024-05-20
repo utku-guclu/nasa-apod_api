@@ -15,7 +15,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to top, #212238bd, rgb(var(--background-rgb)));
+  background: linear-gradient(to top, #212238bd, #10111f);
 }
 
 @layer utilities {
