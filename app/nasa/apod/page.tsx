@@ -6,7 +6,7 @@ type Props = {
 };
 
 export default async function ImageDetail({ params }: Props) {
-  const nasaURL = `https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_TOKEN}`;
+  const nasaURL = `https://api.nasa.gov/planetary/apod?api_key=${process.env.NEXT_PUBLIC_NASA_TOKEN}`;
   const res = await fetch(nasaURL);
   const data: Nasa = await res.json();
 

@@ -199,7 +199,7 @@ export async function DELETE(
 async function fetchImageData(imageId: string) {
   try {
     const response = await fetch(
-      `https://api.nasa.gov/planetary/apod?date=${imageId}&api_key=${process.env.NASA_TOKEN}`
+      `https://api.nasa.gov/planetary/apod?date=${imageId}&api_key=${process.env.NEXT_PUBLIC_NASA_TOKEN}`
     );
 
     if (!response.ok) {
