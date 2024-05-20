@@ -2,7 +2,7 @@
 
 import connectDB from "@/config/database";
 import ImageModel, { ImageDocument } from "@/models/Image";
-import LikeModel, { LikeDocument } from "@/models/Like";
+import LikeModel from "@/models/Like";
 import UserModel, { UserDocument } from "@/models/User";
 import { authOptions } from "@/utils/authOptions";
 import { createHash } from "crypto";
@@ -20,71 +20,56 @@ function emailToUuid(email: string): string {
   return uuidv5(emailHash, namespace);
 }
 
+// Function to convert image date to UUID
+function dateToUuid(imageDate: string): string {
+  const namespace = "1b671a64-40d5-491e-99b0-da01ff1f3341"; // Some random namespace UUID
+  const dateHash = createHash("sha1").update(imageDate).digest("hex");
+  return uuidv5(dateHash, namespace);
+}
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { imageId: string } }
 ) {
-  const imageId = params.imageId;
+  const imageDate = params.imageId;
 
   try {
-    let liked = false;
     // Find or create the image
     let image: ImageDocument | null = await ImageModel.findOne({
-      date: imageId,
+      date: imageDate,
     }).exec();
 
     if (!image) {
-      const imageData = await fetchImageData(imageId); // Fetch image details
+      const imageData = await fetchImageData(imageDate); // Fetch image details
       if (!imageData) {
-        throw new Error("Image data not found for date: " + imageId);
+        throw new Error("Image data not found for date: " + imageDate);
       }
       // Create a new image record
       image = await ImageModel.create({
         title: imageData.title,
         url: imageData.url,
-        date: imageId,
+        date: imageDate,
         likes: 0,
         liked: false,
       });
       console.log("New image created:", image);
     }
 
-    // Check if the user has liked the image
-    const session = await getServerSession(authOptions);
-    const userEmail = session?.user?.email;
-
-    if (!session) {
-      // If no session, determine liked status based on like count
-      console.log("likes count", image?.likes);
-      liked = !!image?.likes;
-    } else {
-      // Convert user email to UUID
-      const userId = emailToUuid(userEmail || "");
-      console.log("User ID:", userId);
-
-      // Find or create the user
-      let user: UserDocument | null = await UserModel.findOne({
-        email: userEmail,
-      }).exec();
-
-      if (!user) {
-        user = await UserModel.create({
-          email: userEmail,
-          name: session.user?.name,
-          image: session.user?.image,
-        });
-        console.log("New user created:", user);
-      }
-
-      // Check if the user has liked the image
-      let like: LikeDocument | null = await LikeModel.findOne({
-        userId: userId,
-        imageId: image?._id,
-      }).exec();
-      liked = !!like; // Set liked to true if like exists
-    }
-
-    return NextResponse.json({ likes: image?.likes, liked });
+    // Fetch all likes for the image and populate users
+    const likes = await LikeModel.find({
+      imageId: image?._id, // Use image._id instead of dateToUuid(imageDate)
+    }).populate({
+      path: "userId",
+      model: UserModel, // Provide the UserModel to correctly populate
+    });
+    console.log("likes", likes);
+    // Map over the populated likes to create the users array
+    const users = likes.map((like) => ({
+      name: like.userId.name || "Unknown",
+      image: like.userId.image || "", // default image
+    }));
+    console.log("users", users);
+    return NextResponse.json({ likes: image?.likes, users });
   } catch (error) {
     console.error("Error in GET /api/likes/[images]:", error);
     return NextResponse.json(
@@ -98,7 +83,7 @@ export async function POST(
   req: NextRequest,
   { params }: { params: { imageId: string } }
 ) {
-  const imageId = params.imageId;
+  const imageDate = params.imageId;
 
   try {
     const session = await getServerSession(authOptions);
@@ -108,13 +93,10 @@ export async function POST(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const image = await ImageModel.findOne({ date: imageId }).exec();
+    const image = await ImageModel.findOne({ date: imageDate }).exec();
     if (!image) {
       return NextResponse.json({ message: "Image not found" }, { status: 404 });
     }
-
-    // Convert user email to UUID
-    const userId = emailToUuid(userEmail);
 
     // Find or create the user
     let user: UserDocument | null = await UserModel.findOne({
@@ -131,14 +113,14 @@ export async function POST(
 
     // Check if the user has already liked the image
     const existingLike = await LikeModel.findOne({
-      userId: userId,
-      imageId: image._id,
+      userId: user?._id, // Use user._id instead of emailToUuid(userEmail)
+      imageId: image._id, // Use image._id instead of dateToUuid(imageDate)
     }).exec();
 
     if (!existingLike) {
       await LikeModel.create({
-        userId: userId,
-        imageId: image._id,
+        userId: user?._id, // Use user._id instead of emailToUuid(userEmail)
+        imageId: image._id, // Use image._id instead of dateToUuid(imageDate)
       });
       image.likes++;
       await image.save(); // Save the updated likes count
@@ -158,7 +140,7 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { imageId: string } }
 ) {
-  const imageId = params.imageId;
+  const imageDate = params.imageId;
 
   try {
     const session = await getServerSession(authOptions);
@@ -168,17 +150,21 @@ export async function DELETE(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const image = await ImageModel.findOne({ date: imageId }).exec();
+    const image = await ImageModel.findOne({ date: imageDate }).exec();
     if (!image) {
       return NextResponse.json({ message: "Image not found" }, { status: 404 });
     }
 
-    // Convert user email to UUID
-    const userId = emailToUuid(userEmail);
+    // Find the user
+    const user = await UserModel.findOne({ email: userEmail }).exec();
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
+    }
 
+    // Check if the user has liked the image
     const like = await LikeModel.findOneAndDelete({
-      userId: userId,
-      imageId: image._id,
+      userId: user._id, // Use user._id instead of emailToUuid(userEmail)
+      imageId: image._id, // Use image._id instead of dateToUuid(imageDate)
     }).exec();
 
     if (like) {

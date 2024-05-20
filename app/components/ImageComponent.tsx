@@ -14,7 +14,28 @@ type Props = {
 const ImageComponent = ({ image }: Props) => {
   const [likes, setLikes] = useState<number>(0);
   const [liked, setLiked] = useState<boolean>(false);
+  const [users, setUsers] = useState<{ name: string; image: string }[]>([]);
+  const [showUsers, setShowUsers] = useState(false);
   const { data: session } = useSession();
+
+  const handleMouseEnter = async () => {
+    try {
+      const res = await fetch(`/api/likes/${image.date}`);
+      if (res.ok) {
+        const data = await res.json();
+        setUsers(data.users || []);
+        setShowUsers(true);
+      } else {
+        throw new Error("Failed to fetch users");
+      }
+    } catch (error) {
+      console.error("Failed to fetch users", error);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setShowUsers(false);
+  };
 
   useEffect(() => {
     const fetchLikes = async () => {
@@ -24,7 +45,9 @@ const ImageComponent = ({ image }: Props) => {
         if (res.ok) {
           const data = await res.json();
           setLikes(data.likes);
-          setLiked(data.liked); // Update liked state based on API response
+          setLiked(data.liked);
+          setUsers(data.users || []);
+          console.log(data.users);
         } else {
           throw new Error("Failed to fetch likes");
         }
@@ -56,6 +79,7 @@ const ImageComponent = ({ image }: Props) => {
         const data = await res.json();
         setLikes(data.likes); // Update likes count based on API response
         setLiked(!liked); // Toggle liked state
+        setUsers(data.users || []);
       } else {
         throw new Error("Failed to update likes");
       }
@@ -85,10 +109,12 @@ const ImageComponent = ({ image }: Props) => {
             }`}
             disabled={!session}
             style={{ pointerEvents: !session ? "none" : "auto" }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
             <FontAwesomeIcon
               icon={faHeart}
-              className={liked ? "text-red-500" : "text-white"}
+              className={likes > 0 ? "text-red-500" : "text-white"}
             />
           </button>
           <span
@@ -97,6 +123,22 @@ const ImageComponent = ({ image }: Props) => {
           >
             Likes: {likes}
           </span>
+          {users.length > 0 && (
+            <div className="absolute bottom-10 right-0 bg-black bg-opacity-75 text-white p-2 rounded-lg shadow-lg w-100 h-100">
+              {users.map((user, index) => (
+                <div key={index} className="flex items-center space-x-2 mb-2">
+                  <Image
+                    src={user.image}
+                    alt={user.name}
+                    width={30}
+                    height={30}
+                    className="rounded-full"
+                  />
+                  <span>{user.name}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>

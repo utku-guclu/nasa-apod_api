@@ -1,15 +1,16 @@
 // likeModel.ts
 
 import mongoose, { Document, Schema } from "mongoose";
+import { UserDocument } from "./User"; // Import UserDocument
 
 export interface LikeDocument extends Document {
-  userId: string;
-  imageId: Schema.Types.ObjectId;
+  userId: mongoose.Types.ObjectId | UserDocument; // Update userId type
+  imageId: string;
 }
 
 const LikeSchema: Schema = new Schema({
-  userId: { type: String, required: true },
-  imageId: { type: Schema.Types.ObjectId, ref: "Image", required: true },
+  userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Reference User schema
+  imageId: { type: String, required: true },
 });
 
 const LikeModel =
