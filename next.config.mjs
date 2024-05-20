@@ -10,6 +10,7 @@ const nextConfig = {
       "player.vimeo.com",
     ],
   },
+  reactStrictMode: true,
 };
 
 export default nextConfig;

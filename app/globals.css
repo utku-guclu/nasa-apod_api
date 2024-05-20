@@ -7,6 +7,25 @@
   --background-rgb: #10111f;
 }
 
+/* Add this to your CSS file or style block */
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4a90e2;
+  animation: spin 1s infinite linear;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 26, 32, 44;
