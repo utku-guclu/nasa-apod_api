@@ -5,6 +5,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import { ReactElement, useEffect, useState } from "react";
+import Loading from "./Loading";
 
 const LoginButton = (): ReactElement => {
   const { data: session, status } = useSession();
@@ -29,9 +30,7 @@ const LoginButton = (): ReactElement => {
   return (
     <div className="text-white text-xl font-bold">
       {loading ? (
-        <div className="flex items-center space-x-2">
-          <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
-        </div>
+        <Loading />
       ) : session ? (
         <div className="flex items-center space-x-2">
           {session.user?.image && (
@@ -41,6 +40,7 @@ const LoginButton = (): ReactElement => {
               height={40}
               className="rounded-full"
               alt={session.user.name || "User Image"}
+              loading="lazy"
             />
           )}
           <button

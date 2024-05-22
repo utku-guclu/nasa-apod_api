@@ -4,6 +4,9 @@ import { Nasa } from "@/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+import Loading from "@/app/components/Loading";
+import SpeechButton from "@/app/components/SpeechButton";
+
 type Props = {
   params: { date: string };
 };
@@ -11,6 +14,7 @@ type Props = {
 export default function ImageDetail({ params }: Props) {
   const [imageIndex, setImageIndex] = useState(0);
   const [data, setData] = useState<Nasa | null>(null);
+  const [flash, setFlash] = useState(false);
 
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_NASA_TOKEN;
@@ -24,38 +28,51 @@ export default function ImageDetail({ params }: Props) {
     fetchData();
 
     const interval = setInterval(() => {
+      setFlash(true);
       setImageIndex((prevIndex) => (prevIndex + 1) % 10); // Assuming you want to cycle through 10 images
-    }, 60000); // 60 seconds
+    }, 120000); // 120 seconds
 
     return () => clearInterval(interval);
   }, [imageIndex]);
 
+  useEffect(() => {
+    if (flash) {
+      const timer = setTimeout(() => setFlash(false), 600); // Flash duration
+      return () => clearTimeout(timer);
+    }
+  }, [flash]);
+
   if (!data) {
     return (
       <div className="w-full h-screen text-white flex items-center justify-center">
-        <div className="flex items-center space-x-2">
-          <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
-        </div>
+        <Loading />
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-screen">
-      <Image
-        className="object-cover"
-        src={data.hdurl}
-        alt="apod"
-        layout="fill"
-        priority={true}
-      />
+    <div className="relative w-full h-screen overflow-hidden">
+      <div className={`image-container ${flash ? "flash" : ""}`}>
+        <Image
+          className="object-cover image-zoom-in"
+          src={data.hdurl}
+          alt="apod"
+          layout="fill"
+          priority={true}
+        />
+      </div>
+
       <div className="absolute inset-0 flex items-end justify-center">
         <div className="relative group">
           <div
             style={{ textShadow: "2px 2px 4px rgba(0, 0, 0, 0.75)" }}
             className="bg-black bg-opacity-50 p-4 text-white opacity-0 transition-opacity duration-500 ease-in-out group-hover:opacity-100 overflow-y-auto max-h-full w-full md:p-6"
           >
-            <h1 className="text-4xl md:text-6xl">{data.title}</h1>
+            <div className="flex items-center space-x-2">
+              <h1 className="text-4xl md:text-6xl">{data.title}</h1>
+              <SpeechButton text={data.explanation} />
+            </div>
+
             <hr className="my-2" />
             <p
               style={{ maxHeight: "75vh" }}
