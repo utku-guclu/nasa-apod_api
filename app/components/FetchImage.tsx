@@ -1,4 +1,5 @@
 import { Nasa } from "@/types";
+import { LikeContextProvider } from "../context/LikeContext";
 import ImageComponent from "./ImageComponent";
 
 export default async function FetchImage() {
@@ -12,7 +13,15 @@ export default async function FetchImage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {imageData &&
           imageData.map((image) => (
-            <ImageComponent key={image.date} image={image} />
+            <LikeContextProvider
+              key={image.date}
+              initialLikes={0}
+              initialLiked={false}
+              initialShowUsers={false}
+              initialUsers={[]}
+            >
+              <ImageComponent image={image} />
+            </LikeContextProvider>
           ))}
       </div>
     </div>

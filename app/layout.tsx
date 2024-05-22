@@ -1,6 +1,7 @@
 // app/layout.tsx
 import { Inter } from "next/font/google";
 import Navbar from "./components/Navbar";
+
 import "./globals.css";
 import { NextAuthProvider } from "./provider";
 
