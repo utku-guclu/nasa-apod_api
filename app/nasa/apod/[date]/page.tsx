@@ -14,12 +14,12 @@ export default function ImageDetail({ params }: Props) {
   const [data, setData] = useState<Nasa | null>(null);
 
   useEffect(() => {
-    const token = process.env.NEXT_PUBLIC_NASA_TOKEN;
     const fetchData = async () => {
-      const nasaURL = `https://api.nasa.gov/planetary/apod?api_key=${token}&count=1`;
+      const token = process.env.NEXT_PUBLIC_NASA_TOKEN;
+      const nasaURL = `https://api.nasa.gov/planetary/apod?api_key=${token}&date=${params.date}`;
       const res = await fetch(nasaURL);
-      const dataArr: Nasa[] = await res.json();
-      setData(dataArr[0]);
+      const data: Nasa = await res.json();
+      setData(data);
     };
 
     fetchData();
