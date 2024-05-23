@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { LikeContextProvider } from "../context/LikeContext";
 import ImageComponent from "./ImageComponent";
 
-const BATCH_SIZE = 6;
+const BATCH_SIZE = 9;
 
 export default function FetchImage() {
   const [images, setImages] = useState<Nasa[]>([]);
@@ -15,18 +15,25 @@ export default function FetchImage() {
 
   const fetchImages = useCallback(async () => {
     setLoading(true);
-    console.log(`${BATCH_SIZE} images saved.`);
     const nasaURL = `https://api.nasa.gov/planetary/apod?api_key=${process.env.NEXT_PUBLIC_NASA_TOKEN}&count=${BATCH_SIZE}`;
     const res = await fetch(nasaURL);
     const newImageData: Nasa[] = await res.json();
-    setImages((prevImages) => [...prevImages, ...newImageData]);
-    setTotalFetched((prevTotal) => prevTotal + newImageData.length);
+
+    // Filter out non-image URLs
+    const filteredImages = newImageData.filter((image) => {
+      const { url } = image;
+      // Check if the URL ends with a known image file extension
+      return /\.(jpeg|jpg|gif|png)$/i.test(url);
+    });
+
+    setImages((prevImages) => [...prevImages, ...filteredImages]);
+    setTotalFetched((prevTotal) => prevTotal + filteredImages.length);
     setLoading(false);
   }, []);
 
   useEffect(() => {
     fetchImages();
-  }, []);
+  }, [fetchImages]);
 
   useEffect(() => {
     const handleScroll = () => {
