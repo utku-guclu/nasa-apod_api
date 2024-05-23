@@ -1,18 +1,57 @@
+"use client";
+
 import { Nasa } from "@/types";
+import { useCallback, useEffect, useState } from "react";
 import { LikeContextProvider } from "../context/LikeContext";
 import ImageComponent from "./ImageComponent";
 
-export default async function FetchImage() {
-  const nasaURL = `https://api.nasa.gov/planetary/apod?api_key=${process.env.NASA_TOKEN}&count=10`;
-  const res = await fetch(nasaURL, { next: { revalidate: 3600000 } }); // 1 hour
-  const imageData: Nasa[] = await res.json();
-  //console.log(imageData);
+const BATCH_SIZE = 6;
+
+export default function FetchImage() {
+  const [images, setImages] = useState<Nasa[]>([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [totalFetched, setTotalFetched] = useState(0);
+
+  const fetchImages = useCallback(async () => {
+    setLoading(true);
+    console.log(`${BATCH_SIZE} images saved.`);
+    const nasaURL = `https://api.nasa.gov/planetary/apod?api_key=${process.env.NEXT_PUBLIC_NASA_TOKEN}&count=${BATCH_SIZE}`;
+    const res = await fetch(nasaURL);
+    const newImageData: Nasa[] = await res.json();
+    setImages((prevImages) => [...prevImages, ...newImageData]);
+    setTotalFetched((prevTotal) => prevTotal + newImageData.length);
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolledTo = window.scrollY + window.innerHeight;
+      const isReachBottom = document.body.scrollHeight === scrolledTo;
+      if (isReachBottom && !loading) {
+        setPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading]);
+
+  useEffect(() => {
+    if (page > 0) {
+      fetchImages();
+    }
+  }, [page, fetchImages]);
 
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {imageData &&
-          imageData.map((image) => (
+        {images.length > 0 ? (
+          images.map((image) => (
             <LikeContextProvider
               key={image.date}
               initialLikes={0}
@@ -22,8 +61,14 @@ export default async function FetchImage() {
             >
               <ImageComponent image={image} />
             </LikeContextProvider>
-          ))}
+          ))
+        ) : (
+          <div className="w-screen h-screen text-white flex items-center justify-center">
+            Loading...
+          </div>
+        )}
       </div>
+      {loading && <div>Loading more images...</div>}
     </div>
   );
 }

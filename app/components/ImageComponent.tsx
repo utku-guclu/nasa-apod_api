@@ -28,7 +28,7 @@ const ImageComponent = ({ image }: Props) => {
       <Link href={`/nasa/apod/${encodeURIComponent(image.date)}`}>
         <Image
           src={image.url}
-          alt="apod"
+          alt={image.title}
           layout="fill"
           objectFit="cover"
           className="rounded-lg"

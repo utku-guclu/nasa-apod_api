@@ -70,6 +70,7 @@
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(to top, #212238bd, #10111f);
+  height: 100vh;
 }
 
 @layer utilities {
