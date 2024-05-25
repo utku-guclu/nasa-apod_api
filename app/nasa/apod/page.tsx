@@ -34,7 +34,7 @@ export default function ImageDetail({ params }: Props) {
   }
 
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full h-screen overflow-hidden">
       <div className="image-container">
         <Image
           className="object-cover image-zoom-in"
