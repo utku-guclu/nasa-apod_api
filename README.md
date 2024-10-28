@@ -1,5 +1,3 @@
-# The NASA APOD (Astronomy Picture of the Day) app allows users to explore and enjoy daily images from NASA's Astronomy Picture of the Day (APOD) API. Users can view stunning space images, learn more about them, and engage with the content through likes and favorites.
-
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
