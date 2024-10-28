@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **NASA APOD (Astronomy Picture of the Day)** app allows users to explore and enjoy daily images from NASA's APOD API. This app provides users with a visually rich experience by offering high-quality space images, detailed information about each image, and engagement features like "like" and "favorite."
+[**NASA APOD (Astronomy Picture of the Day)**](https://nasa-apod-api-ten.vercel.app/) app allows users to explore and enjoy daily images from NASA's APOD API. This app provides users with a visually rich experience by offering high-quality space images, detailed information about each image, and engagement features like "like" and "favorite."
 
 ## Features
 
@@ -73,4 +73,4 @@ Contributions are welcome! Please follow these steps:
     Open a pull request.
 
 ##License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
